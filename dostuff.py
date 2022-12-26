@@ -10,6 +10,9 @@ while True:
         case("CREATE TABLE"):
             try:
                 tableName = input("Input table name: ")
+                if(len(cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}'").fetchall()) != 0):
+                    print(f"{tableName} Already Exists")
+                    break
                 # Get User input for amount of columns wanted in table
                 while True:
                     try:
@@ -53,7 +56,6 @@ while True:
                 sanitizerList = []
                 for x in range(columnNum):
                     currentColumnNumber = x+1
-                    #columninput = input(f"Input Column {currentColumnNumber} Value: ")
                     columnValues.append(input(f"Input Column {currentColumnNumber} Value: "))
                     sanitizerList.append("?")
                 sanitizer = ",".join(sanitizerList)
@@ -63,6 +65,12 @@ while True:
             except Exception as e:
                 print(e)
                 print("Failed to Insert Element")
+        case("DELETE"):
+            try:
+                tableName = input("Input Table Name: ")
+            except Exception as e:
+                print(e)
+                print("Failed to Delete Element")
         case _:
             print("Invalid Command")
 
