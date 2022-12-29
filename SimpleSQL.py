@@ -23,6 +23,7 @@ def printMainCommands():
         DROP TABLE: DROP existing table from Database
         INSERT: Insert element into table
         DELETE: Delete element from table
+        EDIT: Change values of element
         QUERY: Prints out info based on User Filters
         COMMANDS: Print out viable commands""")
 ###Main Program###
@@ -107,6 +108,22 @@ while True:
             except Exception as e:
                 print(e)
                 print("Failed to Delete Element")
+        case("EDIT"):
+            try:
+                tableName = scrubInput(input("Input Table Name: "))
+                if(not tableExists(tableName)):
+                    print(f"{tableName} Doesn't Exists")
+                    continue
+                columnNum = queryTableColumnInfo(tableName)
+                columnFilterName = scrubInput(input("Input Filter Column Name: "))
+                elementFilterName = input("Input Filter Element: ")
+                userColumnInput = scrubInput(input("Input Column Name: "))
+                userValueInput = input("Input New Value: ")
+                cursor.execute(f"UPDATE {tableName} SET {userColumnInput} = ? WHERE {columnFilterName} = ?", (userValueInput,elementFilterName))
+                connection.commit()
+            except Exception as e:
+                print(e)
+                print("Failed to Edit Element")
         case("QUERY"):
             try:
                 tableName = scrubInput(input("Input Table Name: "))
