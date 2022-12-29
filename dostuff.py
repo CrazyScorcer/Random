@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 ###Functions###
 # Checks if Table already Exists in DB
 def tableExists(tableName):
@@ -25,7 +26,7 @@ def printMainCommands():
         QUERY: Prints out info based on User Filters
         COMMANDS: Print out viable commands""")
 ###Main Program###
-connection = sqlite3.connect("practice.db")
+connection = sqlite3.connect(sys.argv[1])
 cursor = connection.cursor()
 printMainCommands()
 while True:
@@ -101,7 +102,7 @@ while True:
                     continue
                 columnName = scrubInput(input("Input Column Name:"))
                 elementName = input("Input Element Value:")
-                cursor.execute(f"DELETE FROM {tableName} WHERE {columnName}=?", (elementName))
+                cursor.execute(f"DELETE FROM {tableName} WHERE {columnName}=?", (elementName,))
                 connection.commit()              
             except Exception as e:
                 print(e)
@@ -125,8 +126,6 @@ while True:
                 format_row = "{:>12}" * (len(columnHeaders)+ 1)
                 print(format_row.format("", *columnHeaders))
                 print(format_row.format("", *query))
-                #for data in query:
-                #    print(format_row.format(data))
             except Exception as e:
                 print(e)
                 print("Failed to Query")
