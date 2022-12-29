@@ -1,5 +1,3 @@
-# SQL-Practice
-Simple Database Editor using sqlite3  
 Features Currently Implemented:  
 * Creating Table with x amount of Columns  
 * Dropping Table  
