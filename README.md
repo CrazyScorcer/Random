@@ -4,11 +4,9 @@ Features Currently Implemented:
 * Inserting element into table  
 * Deleting element from table  
 * Editing a single column of an element in a table  
-* Query a single row from table  
-
+* Query a multiple rows from table  
 
 Planned Implementaition:  
-* Query multiple rows  
 * Editing multiple columns and elements  
 * Add/remove columns from table  
 * Edit column names  

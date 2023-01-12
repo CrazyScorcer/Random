@@ -135,14 +135,14 @@ while True:
                 columnName = scrubInput(input("Input Column Name: "))
                 elementName = input("Input Element Name in Column: ")
                 query = cursor.execute(f"SELECT * FROM {tableName} WHERE {columnName}=?", (elementName,)).fetchall()
-                query = list(query[0])
                 pragma = cursor.execute(f"PRAGMA table_info({tableName})").fetchall()
                 columnHeaders = []
                 for column in pragma:
-                    columnHeaders.append(list(column)[1])    
+                    columnHeaders.append(list(column)[1])
                 format_row = "{:>12}" * (len(columnHeaders)+ 1)
                 print(format_row.format("", *columnHeaders))
-                print(format_row.format("", *query))
+                for element in list(query):
+                    print(format_row.format("", *element))
             except Exception as e:
                 print(e)
                 print("Failed to Query")
