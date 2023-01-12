@@ -23,12 +23,16 @@ def printMainCommands():
         INSERT: Insert element into table
         DELETE: Delete element from table
         ALTER: Add/Drop/Rename Columns in table
-        EDIT: Change values of element
+        EDIT: Change value of element
         QUERY: Prints out info based on User Filters
         COMMANDS: Print out viable commands""")
 def printColumnCommands():
     print("""Commands:
-    """)
+        ADD: Add a new column to a table
+        DROP: Drop a column from a table
+        RENAME: Rename column
+        COMMANDS: Print out valid commnads
+        BACK: Return to Main""")
 ###Main Program###
 connection = sqlite3.connect(sys.argv[1])
 cursor = connection.cursor()
