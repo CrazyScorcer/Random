@@ -4,11 +4,10 @@ import sys
 # Checks if Table already Exists in DB
 def tableExists(tableName):
     return len(cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}'").fetchall()) != 0
-# Prints out Column Name and Type
+# Prints out Column Name and Type; Return value mainly only used in Drop Table
 def queryTableColumnInfo(tableName):
     pragma = cursor.execute(f"PRAGMA table_info({tableName})").fetchall()
     columnNum = 0
-    #Prints out Column's Name and Type
     for column in pragma:
         columnNum += 1
         print(f"Column {columnNum}: {list(column)[1]} {list(column)[2]}")
@@ -23,14 +22,18 @@ def printMainCommands():
         DROP TABLE: DROP existing table from Database
         INSERT: Insert element into table
         DELETE: Delete element from table
+        ALTER: Add/Drop/Rename Columns in table
         EDIT: Change values of element
         QUERY: Prints out info based on User Filters
         COMMANDS: Print out viable commands""")
+def printColumnCommands():
+    print("""Commands:
+    """)
 ###Main Program###
 connection = sqlite3.connect(sys.argv[1])
 cursor = connection.cursor()
-printMainCommands()
 while True:
+    printMainCommands()
     userInput = input("Input Command: ").upper()
     match userInput:
         case("EXIT"):
@@ -108,12 +111,50 @@ while True:
             except Exception as e:
                 print(e)
                 print("Failed to Delete Element")
+        case("ALTER"):
+            tableName = scrubInput(input("Input Table Name: "))
+            if(not tableExists(tableName)):
+                print(f"{tableName} Doesn't Exists")
+                continue
+            columnAmount = queryTableColumnInfo(tableName)
+            columnName = scrubInput(input("Input Column Name: "))
+            userInput = input("Input Command: ").upper()
+            while True:
+                printColumnCommands()
+                match userInput:
+                    case("ADD"):
+                        try:
+                            cursor.execute(f"ALTER TABLE {tableName} ADD {columnName}")
+                        except Exception as e:
+                            print(e)
+                            print(f"Failed to add {columnName} to {tableName}")
+                    case("DROP"):
+                        try:
+                            cursor.execute(f"ALTER TABLE {tableName} DROP COLUMN {columnName}")
+                        except Exception as e:
+                            print(e)
+                            print(f"Failed to remove {columnName} from {tableName}")
+                    case("RENAME"):
+                        newColumnName = scrubInput(input("Input new Column Name: "))
+                        try:
+                            cursor.execute(f"ALETER TABLE {tableName} RENAME COLUMN {columnName} to {newColumnName}")
+                        except Exception as e:
+                            print(e)
+                            print(f"Failed to change {columnName} to {newColumnName} in {tableName}")
+                    case("COMMANDS"):
+                        printColumnCommands()
+                    case("BACK"):  
+                        break
+                    case _:
+                        print("Invalid Command")
+            connection.commit()
         case("EDIT"):
             try:
                 tableName = scrubInput(input("Input Table Name: "))
                 if(not tableExists(tableName)):
                     print(f"{tableName} Doesn't Exists")
                     continue
+
                 columnNum = queryTableColumnInfo(tableName)
                 columnFilterName = scrubInput(input("Input Filter Column Name: "))
                 elementFilterName = input("Input Filter Element: ")
